@@ -28,7 +28,7 @@ public class Part3 {
     public void ouput(){
         setC1(getC1() + 1);
         try {
-            TimeUnit.MILLISECONDS.sleep(500);
+            TimeUnit.MILLISECONDS.sleep(10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -40,7 +40,7 @@ public class Part3 {
     public synchronized void ouputSynchronized(){
         setC1(getC1() + 1);
         try {
-            TimeUnit.MILLISECONDS.sleep(500);
+            TimeUnit.MILLISECONDS.sleep(10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -52,26 +52,24 @@ public class Part3 {
         final Part3 counter = new Part3();
         System.out.println("------------ Non synchronized method ------------");
         for (int i = 0; i < 10; i++) {
-            new Thread(new Runnable() {
-                public void run() {
-                    counter.ouput();
-                    System.out.println();
-                }
-            }).start();
+           new Thread(new Runnable() {
+               public void run() {
+                   counter.ouput();
+               }
+           }).start();
         }
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        System.out.println();
         System.out.println("------------ Synchronized method ------------");
         for (int i = 0; i < 10; i++) {
             new Thread(new Runnable() {
                 public void run() {
                     counter.ouputSynchronized();
-                    System.out.println();
                 }
             }).start();
         }
