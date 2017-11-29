@@ -32,14 +32,27 @@ public class Part5 {
         try {
             RandomAccessFile fileStore = new RandomAccessFile(fileName, "rw");
 
-            while(countLine++ < 10) {
+            long position = 0;
+
+            while(countLine ++ < 10){
+                if( countNumbers < 20){
+                    fileStore.seek(position);
+                    fileStore.writeUTF(String.valueOf(numbbers[countLine]));
+                    fileStore.writeUTF(System.lineSeparator());
+                    position = fileStore.getFilePointer();
+                    countNumbers++;
+                }
+            }
+
+
+            /*while(countLine++ < 10) {
                 for (int i = 0; i < countNumbers; i++) {
                     System.out.println(fileStore.getFilePointer());
                     write(fileStore, numbbers[countLine]);
                 }
                 fileStore.writeUTF(System.lineSeparator());
             }
-            fileStore.close();
+            fileStore.close();*/
         } catch (Exception e) {}
     }
 
