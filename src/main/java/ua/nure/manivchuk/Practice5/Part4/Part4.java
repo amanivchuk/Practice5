@@ -9,7 +9,7 @@ import java.util.Random;
 public class Part4 {
     private static final int SIZE = 4;
     private int[][] array = new int[SIZE][100];
-    private static final Random random = new Random();
+    private static final Random random = new Random(47);
 
     public void fill() {
         for (int i = 0; i < SIZE; i++) {
@@ -27,7 +27,7 @@ public class Part4 {
             for (int i = 0; i < SIZE; i++) {
                 for (int j = 0; j < array[i].length; j++) {
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(1);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -40,14 +40,13 @@ public class Part4 {
         return maxValue;
     }
 
-
     public int[] multipleThread(){
         long time = System.currentTimeMillis();
         final int[] tmp = new int[SIZE];
         for(int i = 0; i < SIZE; i++){
 
             try {
-                Thread.sleep(10);
+                Thread.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -63,6 +62,7 @@ public class Part4 {
         System.out.println("Time of multiple thread = " + (System.currentTimeMillis() - time));
         return tmp;
     }
+
     private int getMaximumValue(int[] mas) {
 
         int max = mas[0];
