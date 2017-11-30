@@ -1,4 +1,4 @@
-package ua.nure.manivchuk.Practice5.Part5;
+package ua.nure.manivchuk.Practice5.Part5_2;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,10 +8,9 @@ import java.nio.charset.Charset;
 /**
  * Created by nec on 30.11.17.
  */
-public class Part5 {
+public class Part5_2 {
     private static final int THREADS = 10;
     private String fileName = "src/main/resources/part5.txt";
-
     public void startWrite(){
         try {
             RandomAccessFile file = new RandomAccessFile(fileName, "rw");
@@ -27,14 +26,10 @@ public class Part5 {
                 t.join();
             }
             file.close();
-
-           WriteFile showData = new WriteFile();
-           showData.showDataFromFile(fileName);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
-
     public void existFile(){
         File file = new File(fileName);
         if(file.exists()){
@@ -43,10 +38,17 @@ public class Part5 {
     }
 
     public static void main(String[] args) {
-        Part5 p = new Part5();
+        Part5_2 p = new Part5_2();
+
+        Thread whiteSpace = new Thread(new WriteWhiteSpaceInFile());
+        whiteSpace.start();
+        try {
+            whiteSpace.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         p.existFile();
         p.startWrite();
-
     }
 }
 
@@ -58,9 +60,6 @@ class WriteFile implements Runnable{
     private int idx;
     private String textToWrite;
 
-    public WriteFile() {
-    }
-
     public WriteFile(RandomAccessFile randomAccessFile, int position) {
         this.randomAccessFile = randomAccessFile;
         this.idx = position;
@@ -71,11 +70,15 @@ class WriteFile implements Runnable{
     public void run() {
         try {
             synchronized (this) {
-                int position = idx * (COLUMNS + EOL_LENGTH);
+                int position = 0;
+                position = idx * (COLUMNS + EOL_LENGTH);
+                System.out.println("==> " + position);
 
                 for (int i = 0; i < COLUMNS; i++) {
                     randomAccessFile.seek(position + i);
                     randomAccessFile.write(textToWrite.getBytes(Charset.forName("UTF-8")));
+
+                    System.out.println(textToWrite);
                 }
                 if (idx != THREADS - 1) {
                     randomAccessFile.write(System.lineSeparator().getBytes(Charset.forName("UTF-8")));
@@ -84,17 +87,33 @@ class WriteFile implements Runnable{
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
+}
 
-    public void showDataFromFile(String fileName){
+class WriteWhiteSpaceInFile implements Runnable{
+    private static final int COLUMNS = 20;
+    private String textToWrite = " ";
+    private int position = 0;
+
+    @Override
+    public void run() {
         try {
-            randomAccessFile = new RandomAccessFile(fileName, "rw");
-
-            String line;
-            while ((line = randomAccessFile.readLine()) != null){
-                System.out.println(line);
+            RandomAccessFile file = new RandomAccessFile("src/main/resources/part5.txt", "rw");
+            int line = 0;
+            while (line++ < 10) {
+                for (int i = 0; i < COLUMNS; i++) {
+                    file.seek(position++);
+                    file.write(textToWrite.getBytes(Charset.forName("UTF-8")));
+                    System.out.print(textToWrite);
+                    if(i == COLUMNS-1){
+                        file.write(System.lineSeparator().getBytes(Charset.forName("UTF-8")));
+                        position++;
+                    }
+                }
+                System.out.println();
             }
-            randomAccessFile.close();
-        }catch (Exception e){/*NOP*/}
+            file.close();
+        }catch (Exception e){}
     }
 }
